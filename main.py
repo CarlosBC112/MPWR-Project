@@ -1,23 +1,18 @@
 from email import message
 
 from fastapi import FastAPI, Form,File,UploadFile
-import os, asyncio
+import os
 from deepgram import Deepgram
 from dotenv import load_dotenv
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
-from typing import Union
-
 from langchain_anthropic import ChatAnthropic
 from langchain.prompts import ChatPromptTemplate
-
 
 load_dotenv()
 
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 claude = ChatAnthropic(api_key=ANTHROPIC_API_KEY,  model="claude-sonnet-4-20250514")
-print("Claude API Key starts with:", ANTHROPIC_API_KEY[:10])
-print("Model:", "claude-3-sonnet")
+
 DG_API_KEY = os.getenv("DG_API_KEY")
 
 dg_client = Deepgram(DG_API_KEY)
@@ -55,11 +50,7 @@ def form_page():
     return """
     <html>
         <body>
-            <h2>Ask a question</h2>
-            <form action="/submit" method="post">
-                <input type="text" name="question" placeholder="Type your question here" />
-                <input type="submit" value="Submit" />
-            </form>
+            
             <h2>Upload an audio file for transcription</h2>
             <form action="/transcribe/" method="post" enctype="multipart/form-data">
                 <input type="file" name="file" />
@@ -69,34 +60,12 @@ def form_page():
         </body>
     </html>
     """
-@app.post("/submit")
-def submit_form(question: str = Form(...)):
-    return {"your_question": question}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
 
 
-#Defines a PYdantic Model for data validation
-class Item(BaseModel):
-    name: str
-    price:float
-    in_stock:bool
 
 
-@app.post("/items/")
-def create_item(item: Item):
-    return{
-        "message": "Item received!",
-        "item": item.dict()
 
-    }
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
 
 

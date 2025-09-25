@@ -1,11 +1,25 @@
+Set-Content -Path .gitignore -Encoding utf8 -Value @"
+# Env files (keep examples)
 .env
+.env.*
+!.env.example
+
+# Virtual envs
 .venv/
 venv/
+
+# Python artifacts
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
 *.pyd
-.vscode/
+*.so
+*.egg-info/
+dist/
+build/
+
+# IDE / OS
 .idea/
+.vscode/
 .DS_Store
 Thumbs.db
+"@
